@@ -1,0 +1,91 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "creation": "2025-07-11 07:17:52.821571",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "boq_detail",
+  "item",
+  "item_group",
+  "uom",
+  "is_stock_item",
+  "created_item",
+  "selling_rate",
+  "boq_qty"
+ ],
+ "fields": [
+  {
+   "columns": 1,
+   "fieldname": "boq_detail",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "BOQ Detail",
+   "options": "BOQ Details"
+  },
+  {
+   "columns": 2,
+   "fieldname": "item",
+   "fieldtype": "Small Text",
+   "in_list_view": 1,
+   "label": "Item"
+  },
+  {
+   "columns": 1,
+   "fieldname": "item_group",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Item Group",
+   "options": "Item Group"
+  },
+  {
+   "columns": 1,
+   "fieldname": "uom",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Uom",
+   "options": "UOM"
+  },
+  {
+   "columns": 1,
+   "default": "0",
+   "fieldname": "is_stock_item",
+   "fieldtype": "Check",
+   "in_list_view": 1,
+   "label": "Maintain Stock"
+  },
+  {
+   "columns": 2,
+   "fieldname": "created_item",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Created Item",
+   "options": "Item"
+  },
+  {
+   "fieldname": "selling_rate",
+   "fieldtype": "Float",
+   "label": "Selling Rate"
+  },
+  {
+   "fieldname": "boq_qty",
+   "fieldtype": "Float",
+   "label": "BOQ Qty"
+  }
+ ],
+ "grid_page_length": 50,
+ "index_web_pages_for_search": 1,
+ "istable": 1,
+ "links": [],
+ "modified": "2025-07-24 08:59:08.992070",
+ "modified_by": "Administrator",
+ "module": "Project Costing",
+ "name": "BOQ Items",
+ "owner": "Administrator",
+ "permissions": [],
+ "row_format": "Dynamic",
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

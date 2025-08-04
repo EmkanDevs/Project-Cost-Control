@@ -1,0 +1,268 @@
+{
+ "actions": [],
+ "autoname": "naming_series:",
+ "creation": "2025-06-19 14:32:46.988500",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "naming_series",
+  "boq",
+  "item_cost_code",
+  "boq_qty",
+  "original_contract_price",
+  "warehouse",
+  "column_break_cgcf",
+  "project",
+  "boq_id",
+  "div_name",
+  "lvl",
+  "selling_rate",
+  "section_break_ntct",
+  "item",
+  "item_group",
+  "column_break_myuv",
+  "item_code",
+  "item_name",
+  "uom",
+  "section_break_hdzz",
+  "is_group",
+  "old_parent",
+  "parent_boq_details",
+  "column_break_ciwy",
+  "rgt",
+  "lft"
+ ],
+ "fields": [
+  {
+   "fieldname": "boq",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "BOQ",
+   "options": "BOQ"
+  },
+  {
+   "fieldname": "naming_series",
+   "fieldtype": "Select",
+   "hidden": 1,
+   "label": "Naming Series",
+   "options": ".{boq}.-"
+  },
+  {
+   "fieldname": "lft",
+   "fieldtype": "Int",
+   "hidden": 1,
+   "label": "Left",
+   "no_copy": 1,
+   "read_only": 1
+  },
+  {
+   "fieldname": "rgt",
+   "fieldtype": "Int",
+   "hidden": 1,
+   "label": "Right",
+   "no_copy": 1,
+   "read_only": 1
+  },
+  {
+   "default": "0",
+   "fieldname": "is_group",
+   "fieldtype": "Check",
+   "label": "Is Group"
+  },
+  {
+   "fieldname": "old_parent",
+   "fieldtype": "Link",
+   "label": "Old Parent",
+   "options": "BOQ Details"
+  },
+  {
+   "fieldname": "parent_boq_details",
+   "fieldtype": "Link",
+   "ignore_user_permissions": 1,
+   "label": "Parent BOQ Details",
+   "options": "BOQ Details"
+  },
+  {
+   "fieldname": "boq_id",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "BOQ ID"
+  },
+  {
+   "fieldname": "div_name",
+   "fieldtype": "Data",
+   "label": "DIV Name"
+  },
+  {
+   "fieldname": "item_cost_code",
+   "fieldtype": "Data",
+   "label": "Item Cost Code"
+  },
+  {
+   "fieldname": "lvl",
+   "fieldtype": "Data",
+   "label": "Lvl"
+  },
+  {
+   "fieldname": "column_break_cgcf",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "section_break_hdzz",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "column_break_ciwy",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "boq_qty",
+   "fieldtype": "Float",
+   "label": "BOQ Qty"
+  },
+  {
+   "fieldname": "selling_rate",
+   "fieldtype": "Currency",
+   "label": "Selling Rate"
+  },
+  {
+   "fieldname": "original_contract_price",
+   "fieldtype": "Currency",
+   "label": "Original Contract Price"
+  },
+  {
+   "fieldname": "section_break_ntct",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "item",
+   "fieldtype": "Small Text",
+   "label": "Item"
+  },
+  {
+   "fieldname": "item_code",
+   "fieldtype": "Link",
+   "label": "Item Code",
+   "options": "Item"
+  },
+  {
+   "fieldname": "item_name",
+   "fieldtype": "Data",
+   "label": "Item Name"
+  },
+  {
+   "fieldname": "item_group",
+   "fieldtype": "Link",
+   "label": "Item Group",
+   "options": "Item Group"
+  },
+  {
+   "fieldname": "uom",
+   "fieldtype": "Link",
+   "label": "Uom",
+   "options": "UOM"
+  },
+  {
+   "fieldname": "column_break_myuv",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "project",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Project",
+   "options": "Project"
+  },
+  {
+   "fieldname": "warehouse",
+   "fieldtype": "Link",
+   "label": "Warehouse",
+   "options": "Warehouse"
+  }
+ ],
+ "grid_page_length": 50,
+ "index_web_pages_for_search": 1,
+ "is_tree": 1,
+ "links": [
+  {
+   "link_doctype": "WBS item",
+   "link_fieldname": "boq_details"
+  },
+  {
+   "group": "Purchasing",
+   "link_doctype": "Material Request",
+   "link_fieldname": "custom_boq_details",
+   "table_fieldname": "items"
+  },
+  {
+   "group": "Purchasing",
+   "link_doctype": "Request for Quotation",
+   "link_fieldname": "custom_boq_details",
+   "table_fieldname": "items"
+  },
+  {
+   "group": "Purchasing",
+   "link_doctype": "Supplier Quotation",
+   "link_fieldname": "custom_boq_details",
+   "table_fieldname": "items"
+  },
+  {
+   "group": "Purchasing",
+   "link_doctype": "Purchase Order",
+   "link_fieldname": "custom_boq_details",
+   "table_fieldname": "items"
+  },
+  {
+   "group": "Purchasing",
+   "link_doctype": "Purchase Receipt",
+   "link_fieldname": "custom_boq_details",
+   "table_fieldname": "items"
+  },
+  {
+   "group": "Purchasing",
+   "link_doctype": "Purchase Invoice",
+   "link_fieldname": "custom_boq_details",
+   "table_fieldname": "items"
+  },
+  {
+   "group": "Purchasing",
+   "link_doctype": "Stock Entry",
+   "link_fieldname": "custom_boq_details",
+   "table_fieldname": "items"
+  },
+  {
+   "group": "Purchasing",
+   "link_doctype": "Expense Claim",
+   "link_fieldname": "custom_boq_details",
+   "table_fieldname": "expenses"
+  }
+ ],
+ "modified": "2025-08-01 14:12:55.546640",
+ "modified_by": "Administrator",
+ "module": "Project Costing",
+ "name": "BOQ Details",
+ "naming_rule": "By \"Naming Series\" field",
+ "nsm_parent_field": "parent_boq_details",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "row_format": "Dynamic",
+ "search_fields": "boq_id",
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": [],
+ "track_changes": 1
+}

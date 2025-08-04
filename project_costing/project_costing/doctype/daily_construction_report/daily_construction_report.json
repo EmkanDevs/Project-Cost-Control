@@ -1,0 +1,260 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "creation": "2025-06-19 12:14:32.986041",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "section_break_dex5",
+  "dcr_no",
+  "dcr_date",
+  "zonearea",
+  "climate_temp",
+  "customer_logo",
+  "consultant_logo",
+  "column_break_z94i",
+  "project",
+  "project_code",
+  "project_name",
+  "location",
+  "weather_is_good_for_work",
+  "column_break_q79e",
+  "customer",
+  "project_consultant",
+  "project_manager",
+  "area_manager",
+  "weather_condition",
+  "manpowers_section",
+  "internal_employees",
+  "rental_employee",
+  "subcontractor_employee",
+  "equipments_used_section",
+  "equipment_list",
+  "daily_activities__tasks_section",
+  "daily_progress",
+  "site_events_section",
+  "received_supplies",
+  "site_events",
+  "section_break_fzcn",
+  "remark"
+ ],
+ "fields": [
+  {
+   "fieldname": "section_break_dex5",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "dcr_no",
+   "fieldtype": "Data",
+   "label": "DCR No"
+  },
+  {
+   "default": "Today",
+   "fieldname": "dcr_date",
+   "fieldtype": "Date",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "DCR Date"
+  },
+  {
+   "fieldname": "project",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Project",
+   "options": "Project",
+   "reqd": 1
+  },
+  {
+   "fetch_from": "project.custom_project_code",
+   "fieldname": "project_code",
+   "fieldtype": "Data",
+   "label": "Project Code",
+   "read_only": 1
+  },
+  {
+   "fetch_from": "project.project_name",
+   "fieldname": "project_name",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Project Name",
+   "read_only": 1
+  },
+  {
+   "fetch_from": "project.custom_project_consultant",
+   "fieldname": "project_consultant",
+   "fieldtype": "Data",
+   "label": "Project Consultant",
+   "read_only": 1
+  },
+  {
+   "fetch_from": "project.custom_location",
+   "fieldname": "location",
+   "fieldtype": "Data",
+   "label": "Location",
+   "read_only": 1
+  },
+  {
+   "fetch_from": "project.custom_project_manager",
+   "fieldname": "project_manager",
+   "fieldtype": "Data",
+   "label": "Project Manager",
+   "read_only": 1
+  },
+  {
+   "fetch_from": "project.custom_area_manager",
+   "fieldname": "area_manager",
+   "fieldtype": "Data",
+   "label": "Area Manager",
+   "read_only": 1
+  },
+  {
+   "fieldname": "column_break_z94i",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "column_break_q79e",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fetch_from": "project.customer",
+   "fieldname": "customer",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Customer",
+   "read_only": 1
+  },
+  {
+   "fieldname": "zonearea",
+   "fieldtype": "Data",
+   "label": "Zone/Area"
+  },
+  {
+   "fieldname": "customer_logo",
+   "fieldtype": "Attach Image",
+   "label": "Customer Logo"
+  },
+  {
+   "fieldname": "consultant_logo",
+   "fieldtype": "Attach Image",
+   "label": "Consultant Logo"
+  },
+  {
+   "fieldname": "site_events_section",
+   "fieldtype": "Section Break",
+   "label": "Site Events"
+  },
+  {
+   "fieldname": "site_events",
+   "fieldtype": "Table",
+   "label": "Site Events, Violations & NCRs",
+   "options": "Site Event"
+  },
+  {
+   "fieldname": "section_break_fzcn",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "remark",
+   "fieldtype": "Small Text",
+   "label": "Remark"
+  },
+  {
+   "fieldname": "manpowers_section",
+   "fieldtype": "Section Break",
+   "label": "Manpowers"
+  },
+  {
+   "fieldname": "internal_employees",
+   "fieldtype": "Table",
+   "label": "Internal Employees",
+   "options": "DCR Internal Employee List"
+  },
+  {
+   "fieldname": "rental_employee",
+   "fieldtype": "Table",
+   "label": "Rental Employee",
+   "options": "DCR Rental Employee List"
+  },
+  {
+   "fieldname": "subcontractor_employee",
+   "fieldtype": "Table",
+   "label": "Subcontractor Employee",
+   "options": "DCR Subcontractor Employee List"
+  },
+  {
+   "fieldname": "received_supplies",
+   "fieldtype": "Table",
+   "label": "Received Supplies",
+   "options": "DCR Received Supplies List"
+  },
+  {
+   "fieldname": "daily_activities__tasks_section",
+   "fieldtype": "Section Break",
+   "label": "Daily Activities / Tasks"
+  },
+  {
+   "fieldname": "daily_progress",
+   "fieldtype": "Table",
+   "label": "Daily Progress",
+   "options": "DCR Work in progress"
+  },
+  {
+   "fieldname": "climate_temp",
+   "fieldtype": "Data",
+   "label": "Climate Temp"
+  },
+  {
+   "default": "Yes",
+   "fieldname": "weather_is_good_for_work",
+   "fieldtype": "Select",
+   "label": "Weather is Good for Work",
+   "options": "Yes\nNo"
+  },
+  {
+   "default": "Moderate",
+   "fieldname": "weather_condition",
+   "fieldtype": "Select",
+   "label": "Weather Condition",
+   "options": "Moderate\nVery Hot\nDusty\nRainy"
+  },
+  {
+   "fieldname": "equipments_used_section",
+   "fieldtype": "Section Break",
+   "label": "Equipments Used"
+  },
+  {
+   "fieldname": "equipment_list",
+   "fieldtype": "Table",
+   "label": "Equipment List",
+   "options": "DCR Equipment List"
+  }
+ ],
+ "grid_page_length": 50,
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2025-07-13 10:21:02.840852",
+ "modified_by": "Administrator",
+ "module": "Project Costing",
+ "name": "Daily Construction Report",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "row_format": "Dynamic",
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

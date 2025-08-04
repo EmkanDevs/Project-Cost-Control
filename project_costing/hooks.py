@@ -26,8 +26,9 @@ app_license = "mit"
 
 # include js, css files in header of desk.html
 # app_include_css = "/assets/project_costing/css/project_costing.css"
-# app_include_js = "/assets/project_costing/js/project_costing.js"
-
+app_include_js = [
+    "https://cdn.jsdelivr.net/npm/chart.js",
+]
 # include js, css files in header of web template
 # web_include_css = "/assets/project_costing/css/project_costing.css"
 # web_include_js = "/assets/project_costing/js/project_costing.js"
@@ -43,9 +44,18 @@ app_license = "mit"
 # page_js = {"page" : "public/js/file.js"}
 
 # include js in doctype views
-# doctype_js = {"doctype" : "public/js/doctype.js"}
+doctype_js = {"Project" : "public/js/project.js",
+              "Material Request":"public/js/material_request.js",
+              "Request for Quotation":"public/js/request_for_quotation",
+              "Supplier Quotation":"public/js/supplier_quotation.js",
+              "Purchase Receipt":"public/js/purchase_receipt.js",
+              "Purchase Invoice":"public/js/purchase_invoice.js",
+              "Stock Entry":"public/js/stock_entry.js",
+              "Expense Claim":"public/js/expense_claim.js",
+              "Purchase Order":"public/js/purchase_order.js"}
 # doctype_list_js = {"doctype" : "public/js/doctype_list.js"}
-# doctype_tree_js = {"doctype" : "public/js/doctype_tree.js"}
+doctype_tree_js = {"WBS item" : "public/js/wbs_item_tree.js",
+                   "BOQ Details": "public/js/boq_detail.js",}
 # doctype_calendar_js = {"doctype" : "public/js/doctype_calendar.js"}
 
 # Svg Icons
@@ -138,11 +148,22 @@ app_license = "mit"
 # Hook on document methods and events
 
 # doc_events = {
-# 	"*": {
-# 		"on_update": "method",
-# 		"on_cancel": "method",
-# 		"on_trash": "method"
-# 	}
+# 	"Material Request":{
+#         "on_submit": "project_costing.project_costing.doc_events.material_request.on_submit",
+#         "on_cancel": "project_costing.project_costing.doc_events.material_request.on_cancel"
+#     },
+#     "Purchase Order":{ 
+#         "on_submit": "project_costing.project_costing.doc_events.purchase_order.on_submit",
+#         "on_cancel": "project_costing.project_costing.doc_events.purchase_order.on_cancel"
+#     },
+#      "Purchase Receipt":{ 
+#         "on_submit": "project_costing.project_costing.doc_events.purchase_receipt.on_submit",
+#         "on_cancel": "project_costing.project_costing.doc_events.purchase_receipt.on_cancel"
+#     },
+#      "Stock Entry":{ 
+#         "on_submit": "project_costing.project_costing.doc_events.stock_entry.on_submit",
+#         "on_cancel": "project_costing.project_costing.doc_events.stock_entry.on_cancel"
+#     }
 # }
 
 # Scheduled Tasks
@@ -165,7 +186,7 @@ app_license = "mit"
 # 		"project_costing.tasks.monthly"
 # 	],
 # }
-
+treeviews = ["WBS item"]
 # Testing
 # -------
 

@@ -1,0 +1,110 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "creation": "2025-07-06 13:00:04.689299",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "equipment_type",
+  "equipment_type_arabic",
+  "boq_item",
+  "boq_id",
+  "boq_item_description",
+  "column_break_xa2w",
+  "quantity",
+  "hour",
+  "provided_by",
+  "asset_local_code",
+  "remark"
+ ],
+ "fields": [
+  {
+   "fieldname": "equipment_type",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Equipment Type",
+   "options": "Equipment Type",
+   "reqd": 1
+  },
+  {
+   "default": "1",
+   "fieldname": "quantity",
+   "fieldtype": "Int",
+   "in_list_view": 1,
+   "label": "Quantity"
+  },
+  {
+   "fieldname": "remark",
+   "fieldtype": "Data",
+   "label": "Remark"
+  },
+  {
+   "fetch_from": "equipment_type.equipment_type_arabic",
+   "fieldname": "equipment_type_arabic",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Equipment Type Arabic",
+   "read_only": 1
+  },
+  {
+   "fieldname": "provided_by",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "label": "Provided By",
+   "options": "\nInternal (Owned by CPC)\nRental (Sister Company)\nSubcontractor (Ownership)"
+  },
+  {
+   "fieldname": "asset_local_code",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Asset Tag/ID"
+  },
+  {
+   "fieldname": "column_break_xa2w",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "boq_item",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "BOQ Item",
+   "options": "BOQ Details"
+  },
+  {
+   "fetch_from": "boq_item.boq_id",
+   "fieldname": "boq_id",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "BOQ ID",
+   "read_only": 1
+  },
+  {
+   "fetch_from": "boq_item.div_name",
+   "fieldname": "boq_item_description",
+   "fieldtype": "Data",
+   "label": "BOQ Item Description",
+   "read_only": 1
+  },
+  {
+   "fieldname": "hour",
+   "fieldtype": "Float",
+   "in_list_view": 1,
+   "label": "Hour"
+  }
+ ],
+ "grid_page_length": 50,
+ "index_web_pages_for_search": 1,
+ "istable": 1,
+ "links": [],
+ "modified": "2025-07-08 08:11:45.753906",
+ "modified_by": "Administrator",
+ "module": "Project Costing",
+ "name": "DCR Equipment List",
+ "owner": "Administrator",
+ "permissions": [],
+ "row_format": "Dynamic",
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

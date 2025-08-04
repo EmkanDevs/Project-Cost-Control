@@ -1,0 +1,80 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "creation": "2025-07-11 07:12:50.457430",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "wbs_item",
+  "item",
+  "item_group",
+  "uom",
+  "is_stock_item",
+  "created_item"
+ ],
+ "fields": [
+  {
+   "columns": 1,
+   "fieldname": "wbs_item",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "WBS Item",
+   "options": "WBS item"
+  },
+  {
+   "columns": 2,
+   "fieldname": "item",
+   "fieldtype": "Small Text",
+   "in_list_view": 1,
+   "label": "Item"
+  },
+  {
+   "columns": 1,
+   "fieldname": "item_group",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Item Group",
+   "options": "Item Group"
+  },
+  {
+   "columns": 1,
+   "fieldname": "uom",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Uom",
+   "options": "UOM"
+  },
+  {
+   "columns": 1,
+   "default": "0",
+   "fieldname": "is_stock_item",
+   "fieldtype": "Check",
+   "in_list_view": 1,
+   "label": "Maintain Stock"
+  },
+  {
+   "columns": 2,
+   "fieldname": "created_item",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Created Item",
+   "options": "Item",
+   "read_only": 1
+  }
+ ],
+ "grid_page_length": 50,
+ "index_web_pages_for_search": 1,
+ "istable": 1,
+ "links": [],
+ "modified": "2025-07-16 10:01:20.889011",
+ "modified_by": "Administrator",
+ "module": "Project Costing",
+ "name": "BOQ WBS Item",
+ "owner": "Administrator",
+ "permissions": [],
+ "row_format": "Dynamic",
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

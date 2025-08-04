@@ -1,0 +1,58 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "creation": "2025-06-23 11:49:06.542085",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "event_section",
+  "column_break_dw5s",
+  "no_of_events",
+  "section_break_cfcy",
+  "event_description"
+ ],
+ "fields": [
+  {
+   "default": "1",
+   "fieldname": "no_of_events",
+   "fieldtype": "Int",
+   "label": "No of Events",
+   "options": "Environment"
+  },
+  {
+   "fieldname": "event_description",
+   "fieldtype": "Small Text",
+   "label": "Event Description",
+   "options": "Inspections"
+  },
+  {
+   "fieldname": "event_section",
+   "fieldtype": "Select",
+   "label": "Event Section",
+   "options": "\nHealth and Safety\nEnvironment\nInspections\nMaterial Delivery\nNCR\nTesting"
+  },
+  {
+   "fieldname": "section_break_cfcy",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "column_break_dw5s",
+   "fieldtype": "Column Break"
+  }
+ ],
+ "grid_page_length": 50,
+ "index_web_pages_for_search": 1,
+ "istable": 1,
+ "links": [],
+ "modified": "2025-06-24 09:26:09.695353",
+ "modified_by": "Administrator",
+ "module": "Project Costing",
+ "name": "Site Event",
+ "owner": "Administrator",
+ "permissions": [],
+ "row_format": "Dynamic",
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

@@ -1,0 +1,327 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "autoname": "naming_series:",
+ "creation": "2025-06-19 13:49:58.682893",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "section_break_hnpt",
+  "project",
+  "project_name",
+  "amended_from",
+  "report_date",
+  "daily_ev",
+  "daily_ev_percent",
+  "elapsed_time_percent",
+  "boq_details_created",
+  "details_fetched",
+  "column_break_kxdd",
+  "version",
+  "warehouse",
+  "cumm_ev",
+  "cum_planned_value",
+  "planned_weekly_ev",
+  "cumplanned_value_percent",
+  "original_contract_value",
+  "naming_series",
+  "wbs_item_created",
+  "missing_item_created",
+  "process_detail_tab",
+  "custom_html",
+  "boq_details_tab",
+  "item_group_boq",
+  "uom_boq",
+  "boq_details",
+  "wbs_item_tab",
+  "item_group_wbs",
+  "uom_wbs",
+  "wbs_item"
+ ],
+ "fields": [
+  {
+   "fieldname": "section_break_hnpt",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "amended_from",
+   "fieldtype": "Link",
+   "label": "Amended From",
+   "no_copy": 1,
+   "options": "BOQ",
+   "print_hide": 1,
+   "read_only": 1,
+   "search_index": 1
+  },
+  {
+   "fieldname": "report_date",
+   "fieldtype": "Date",
+   "in_list_view": 1,
+   "label": "Report Date"
+  },
+  {
+   "fieldname": "daily_ev",
+   "fieldtype": "Data",
+   "label": "Daily EV"
+  },
+  {
+   "fieldname": "daily_ev_percent",
+   "fieldtype": "Percent",
+   "label": "Daily EV %"
+  },
+  {
+   "fieldname": "planned_weekly_ev",
+   "fieldtype": "Percent",
+   "label": "Planned Weekly EV %"
+  },
+  {
+   "fieldname": "cumm_ev",
+   "fieldtype": "Data",
+   "label": "Cumm EV"
+  },
+  {
+   "fieldname": "cum_planned_value",
+   "fieldtype": "Data",
+   "label": "Cum Planned Value"
+  },
+  {
+   "fieldname": "cumplanned_value_percent",
+   "fieldtype": "Percent",
+   "label": "Cum.Planned Value %"
+  },
+  {
+   "fieldname": "elapsed_time_percent",
+   "fieldtype": "Percent",
+   "label": "Elapsed Time %"
+  },
+  {
+   "fieldname": "original_contract_value",
+   "fieldtype": "Currency",
+   "in_list_view": 1,
+   "label": "Original Contract Value"
+  },
+  {
+   "fieldname": "column_break_kxdd",
+   "fieldtype": "Column Break"
+  },
+  {
+   "bold": 1,
+   "fieldname": "project",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Project",
+   "options": "Project",
+   "reqd": 1
+  },
+  {
+   "fieldname": "naming_series",
+   "fieldtype": "Select",
+   "hidden": 1,
+   "label": "Naming Series",
+   "options": "BOQ-"
+  },
+  {
+   "default": "0",
+   "fieldname": "boq_details_created",
+   "fieldtype": "Check",
+   "label": "BOQ Details Created",
+   "read_only": 1
+  },
+  {
+   "default": "0",
+   "fieldname": "wbs_item_created",
+   "fieldtype": "Check",
+   "label": "WBS Item Created",
+   "read_only": 1
+  },
+  {
+   "fieldname": "process_detail_tab",
+   "fieldtype": "Tab Break",
+   "label": "Process Detail"
+  },
+  {
+   "fieldname": "custom_html",
+   "fieldtype": "HTML",
+   "label": "Custom Html"
+  },
+  {
+   "fetch_from": "project.project_name",
+   "fieldname": "project_name",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Project Name",
+   "read_only": 1
+  },
+  {
+   "default": "Original Budget",
+   "fieldname": "version",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Version",
+   "options": "Original Budget\nZero Base Budget"
+  },
+  {
+   "fieldname": "boq_details_tab",
+   "fieldtype": "Tab Break",
+   "label": "BOQ Details"
+  },
+  {
+   "fieldname": "boq_details",
+   "fieldtype": "Table",
+   "label": "BOQ Details",
+   "mandatory_depends_on": "eval:doc.details_fetched\r\n",
+   "options": "BOQ Items"
+  },
+  {
+   "fieldname": "wbs_item_tab",
+   "fieldtype": "Tab Break",
+   "label": "WBS Item"
+  },
+  {
+   "fieldname": "wbs_item",
+   "fieldtype": "Table",
+   "label": "WBS Item",
+   "mandatory_depends_on": "eval:doc.details_fetched\r\n",
+   "options": "BOQ WBS Item"
+  },
+  {
+   "default": "0",
+   "fieldname": "details_fetched",
+   "fieldtype": "Check",
+   "label": "Details fetched",
+   "read_only": 1
+  },
+  {
+   "fieldname": "item_group_boq",
+   "fieldtype": "Link",
+   "label": "Item Group",
+   "options": "Item Group"
+  },
+  {
+   "fieldname": "uom_boq",
+   "fieldtype": "Link",
+   "label": "Uom",
+   "options": "UOM"
+  },
+  {
+   "fieldname": "item_group_wbs",
+   "fieldtype": "Link",
+   "label": "Item Group",
+   "options": "Item Group"
+  },
+  {
+   "fieldname": "uom_wbs",
+   "fieldtype": "Link",
+   "label": "Uom",
+   "options": "UOM"
+  },
+  {
+   "default": "0",
+   "fieldname": "missing_item_created",
+   "fieldtype": "Check",
+   "label": "Missing Item created",
+   "read_only": 1
+  },
+  {
+   "fieldname": "warehouse",
+   "fieldtype": "Link",
+   "label": "Warehouse",
+   "options": "Warehouse",
+   "reqd": 1
+  }
+ ],
+ "grid_page_length": 50,
+ "index_web_pages_for_search": 1,
+ "links": [
+  {
+   "group": "Fulfillment",
+   "link_doctype": "BOQ Details",
+   "link_fieldname": "boq"
+  },
+  {
+   "group": "Fulfillment",
+   "link_doctype": "WBS item",
+   "link_fieldname": "boq"
+  },
+  {
+   "group": "Selling",
+   "link_doctype": "Sales Order",
+   "link_fieldname": "custom_boq"
+  },
+  {
+   "group": "Purchasing",
+   "link_doctype": "Material Request",
+   "link_fieldname": "custom_boq",
+   "table_fieldname": "items"
+  },
+  {
+   "group": "Purchasing",
+   "link_doctype": "Request for Quotation",
+   "link_fieldname": "custom_boq",
+   "table_fieldname": "items"
+  },
+  {
+   "group": "Purchasing",
+   "link_doctype": "Supplier Quotation",
+   "link_fieldname": "custom_boq",
+   "table_fieldname": "items"
+  },
+  {
+   "group": "Purchasing",
+   "link_doctype": "Purchase Order",
+   "link_fieldname": "custom_boq",
+   "table_fieldname": "items"
+  },
+  {
+   "group": "Purchasing",
+   "link_doctype": "Purchase Receipt",
+   "link_fieldname": "custom_boq",
+   "table_fieldname": "items"
+  },
+  {
+   "group": "Purchasing",
+   "link_doctype": "Purchase Invoice",
+   "link_fieldname": "custom_boq",
+   "table_fieldname": "items"
+  },
+  {
+   "group": "Purchasing",
+   "link_doctype": "Stock Entry",
+   "link_fieldname": "custom_boq",
+   "table_fieldname": "items"
+  },
+  {
+   "group": "Purchasing",
+   "link_doctype": "Expense Claim",
+   "link_fieldname": "custom_boq",
+   "table_fieldname": "expenses"
+  }
+ ],
+ "modified": "2025-08-01 14:11:26.106917",
+ "modified_by": "Administrator",
+ "module": "Project Costing",
+ "name": "BOQ",
+ "naming_rule": "By \"Naming Series\" field",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "select": 1,
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "row_format": "Dynamic",
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

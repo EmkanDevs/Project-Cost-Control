@@ -1,0 +1,447 @@
+{
+ "actions": [],
+ "autoname": "field:serial",
+ "creation": "2024-08-29 00:30:54.685309",
+ "default_view": "List",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "serial_no",
+  "serial",
+  "short_description",
+  "boq_id",
+  "boq_details",
+  "warehouse",
+  "column_break_scqz",
+  "cost_code",
+  "project",
+  "level",
+  "cost_center",
+  "cost_center_code",
+  "combined_code",
+  "boq",
+  "section_break_4",
+  "item_group",
+  "item",
+  "uom",
+  "item_name",
+  "column_break_khpn",
+  "item_code",
+  "res_type",
+  "section_break_lcjh",
+  "qty",
+  "consumed_quantity",
+  "waste",
+  "resource_qty",
+  "pr__reserved_qty",
+  "po_reserved_qty",
+  "available_qty",
+  "resource_rate",
+  "column_break_7",
+  "unit_cost",
+  "budget",
+  "total",
+  "available_amount",
+  "risk__qty",
+  "petty_cash_qty",
+  "petty_cash_amount",
+  "budget_qty",
+  "task_information_section",
+  "ref_task",
+  "start_date",
+  "end_date",
+  "section_break_ocpp",
+  "is_group",
+  "info",
+  "lft",
+  "rgt",
+  "old_parent",
+  "parent_wbs_item",
+  "section_break_iewo",
+  "long_description"
+ ],
+ "fields": [
+  {
+   "fieldname": "serial_no",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Serial No"
+  },
+  {
+   "fieldname": "serial",
+   "fieldtype": "Data",
+   "label": "Serial",
+   "unique": 1
+  },
+  {
+   "fieldname": "short_description",
+   "fieldtype": "Small Text",
+   "in_list_view": 1,
+   "label": " Short Description"
+  },
+  {
+   "fieldname": "column_break_scqz",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "cost_code",
+   "fieldtype": "Data",
+   "label": "Cost Code"
+  },
+  {
+   "fieldname": "project",
+   "fieldtype": "Link",
+   "label": "Project",
+   "options": "Project"
+  },
+  {
+   "fieldname": "level",
+   "fieldtype": "Select",
+   "label": "Level",
+   "options": "1\n2\n3\n4"
+  },
+  {
+   "fieldname": "cost_center",
+   "fieldtype": "Link",
+   "label": "Cost Center",
+   "options": "Cost Center"
+  },
+  {
+   "fetch_from": "cost_center.custom_code",
+   "fieldname": "cost_center_code",
+   "fieldtype": "Data",
+   "label": "Financial Code"
+  },
+  {
+   "fieldname": "combined_code",
+   "fieldtype": "Data",
+   "label": "Combined Code"
+  },
+  {
+   "collapsible": 1,
+   "fieldname": "section_break_4",
+   "fieldtype": "Section Break",
+   "label": "Material"
+  },
+  {
+   "fieldname": "item_group",
+   "fieldtype": "Link",
+   "label": "Item group",
+   "options": "Item Group",
+   "read_only_depends_on": "eval:doc.main=='1'"
+  },
+  {
+   "fieldname": "item",
+   "fieldtype": "Link",
+   "label": "Item",
+   "options": "Item",
+   "read_only_depends_on": "eval:doc.main=='1'"
+  },
+  {
+   "default": "NOS",
+   "fieldname": "uom",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "UOM"
+  },
+  {
+   "fieldname": "section_break_lcjh",
+   "fieldtype": "Section Break"
+  },
+  {
+   "default": "0",
+   "fieldname": "qty",
+   "fieldtype": "Float",
+   "in_list_view": 1,
+   "label": "BOQ Qty"
+  },
+  {
+   "fieldname": "consumed_quantity",
+   "fieldtype": "Data",
+   "label": "Consumed Quantity"
+  },
+  {
+   "default": "1",
+   "fieldname": "waste",
+   "fieldtype": "Float",
+   "label": "Waste"
+  },
+  {
+   "default": "1",
+   "fieldname": "resource_qty",
+   "fieldtype": "Float",
+   "label": "Resource QTY"
+  },
+  {
+   "fieldname": "pr__reserved_qty",
+   "fieldtype": "Float",
+   "label": "PR  Reserved QTY"
+  },
+  {
+   "fieldname": "po_reserved_qty",
+   "fieldtype": "Float",
+   "label": "PO Reserved Qty"
+  },
+  {
+   "fieldname": "available_qty",
+   "fieldtype": "Float",
+   "label": "Available Qty"
+  },
+  {
+   "fieldname": "column_break_7",
+   "fieldtype": "Column Break"
+  },
+  {
+   "default": "0",
+   "fieldname": "unit_cost",
+   "fieldtype": "Currency",
+   "in_list_view": 1,
+   "label": "Material Rate",
+   "non_negative": 1
+  },
+  {
+   "fieldname": "budget",
+   "fieldtype": "Float",
+   "label": "Budget"
+  },
+  {
+   "default": "0",
+   "fieldname": "total",
+   "fieldtype": "Currency",
+   "label": "PO Reserved Amount",
+   "non_negative": 1,
+   "search_index": 1
+  },
+  {
+   "fieldname": "available_amount",
+   "fieldtype": "Float",
+   "label": "Available Amount"
+  },
+  {
+   "collapsible": 1,
+   "fieldname": "task_information_section",
+   "fieldtype": "Section Break",
+   "label": "Task information",
+   "options": "fa fa-tag"
+  },
+  {
+   "fieldname": "ref_task",
+   "fieldtype": "Link",
+   "label": "Ref_Task",
+   "options": "Task"
+  },
+  {
+   "fieldname": "start_date",
+   "fieldtype": "Date",
+   "label": "Start Date"
+  },
+  {
+   "fieldname": "end_date",
+   "fieldtype": "Date",
+   "label": "End Date"
+  },
+  {
+   "collapsible": 1,
+   "fieldname": "section_break_ocpp",
+   "fieldtype": "Section Break",
+   "label": "Other info"
+  },
+  {
+   "default": "0",
+   "fieldname": "is_group",
+   "fieldtype": "Check",
+   "label": "Is Group"
+  },
+  {
+   "fieldname": "info",
+   "fieldtype": "Button",
+   "label": "info"
+  },
+  {
+   "fieldname": "lft",
+   "fieldtype": "Int",
+   "hidden": 1,
+   "label": "Left",
+   "no_copy": 1,
+   "read_only": 1
+  },
+  {
+   "fieldname": "rgt",
+   "fieldtype": "Int",
+   "hidden": 1,
+   "label": "Right",
+   "no_copy": 1,
+   "read_only": 1
+  },
+  {
+   "fieldname": "old_parent",
+   "fieldtype": "Link",
+   "label": "Old Parent",
+   "options": "WBS item"
+  },
+  {
+   "fieldname": "parent_wbs_item",
+   "fieldtype": "Link",
+   "ignore_user_permissions": 1,
+   "label": "Parent WBS item",
+   "options": "WBS item"
+  },
+  {
+   "fieldname": "section_break_iewo",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "long_description",
+   "fieldtype": "Text Editor",
+   "in_list_view": 1,
+   "label": " Long Description "
+  },
+  {
+   "fetch_from": "boq_details.boq_id",
+   "fetch_if_empty": 1,
+   "fieldname": "boq_id",
+   "fieldtype": "Data",
+   "in_standard_filter": 1,
+   "label": "BOQ ID"
+  },
+  {
+   "fieldname": "column_break_khpn",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "item_code",
+   "fieldtype": "Small Text",
+   "label": "Item"
+  },
+  {
+   "fieldname": "res_type",
+   "fieldtype": "Select",
+   "label": "Res Type",
+   "options": "\nMAT\nSUB"
+  },
+  {
+   "fieldname": "boq_details",
+   "fieldtype": "Link",
+   "in_standard_filter": 1,
+   "label": "BOQ Details",
+   "options": "BOQ Details"
+  },
+  {
+   "fieldname": "boq",
+   "fieldtype": "Link",
+   "in_standard_filter": 1,
+   "label": "BOQ",
+   "options": "BOQ"
+  },
+  {
+   "fieldname": "item_name",
+   "fieldtype": "Data",
+   "label": "Item Name"
+  },
+  {
+   "fieldname": "risk__qty",
+   "fieldtype": "Float",
+   "label": "Risk  Qty"
+  },
+  {
+   "fieldname": "petty_cash_qty",
+   "fieldtype": "Float",
+   "label": "Petty Cash Qty"
+  },
+  {
+   "fieldname": "petty_cash_amount",
+   "fieldtype": "Float",
+   "label": "Petty Cash Amount"
+  },
+  {
+   "fieldname": "resource_rate",
+   "fieldtype": "Float",
+   "label": "Resource Rate"
+  },
+  {
+   "fieldname": "warehouse",
+   "fieldtype": "Link",
+   "label": "Warehouse",
+   "options": "Warehouse"
+  },
+  {
+   "fieldname": "budget_qty",
+   "fieldtype": "Float",
+   "label": "Budget Qty"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "is_tree": 1,
+ "links": [
+  {
+   "link_doctype": "Material Request",
+   "link_fieldname": "custom_wbs",
+   "table_fieldname": "items"
+  },
+  {
+   "link_doctype": "Request for Quotation",
+   "link_fieldname": "custom_wbs",
+   "table_fieldname": "items"
+  },
+  {
+   "link_doctype": "Supplier Quotation",
+   "link_fieldname": "custom_wbs",
+   "table_fieldname": "items"
+  },
+  {
+   "link_doctype": "Purchase Order",
+   "link_fieldname": "custom_wbs",
+   "table_fieldname": "items"
+  },
+  {
+   "link_doctype": "Purchase Receipt",
+   "link_fieldname": "custom_wbs",
+   "table_fieldname": "items"
+  },
+  {
+   "link_doctype": "Purchase Invoice",
+   "link_fieldname": "custom_wbs",
+   "table_fieldname": "items"
+  },
+  {
+   "link_doctype": "Stock Entry",
+   "link_fieldname": "custom_wbs",
+   "table_fieldname": "items"
+  },
+  {
+   "link_doctype": "Expense Claim",
+   "link_fieldname": "custom_wbs",
+   "table_fieldname": "expenses"
+  }
+ ],
+ "modified": "2025-08-01 15:09:59.800660",
+ "modified_by": "Administrator",
+ "module": "Project Costing",
+ "name": "WBS item",
+ "naming_rule": "By fieldname",
+ "nsm_parent_field": "parent_wbs_item",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "quick_entry": 1,
+ "row_format": "Dynamic",
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": [],
+ "title_field": "cost_code",
+ "track_changes": 1,
+ "track_seen": 1
+}

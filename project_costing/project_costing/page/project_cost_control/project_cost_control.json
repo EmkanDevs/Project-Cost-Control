@@ -1,0 +1,23 @@
+{
+ "content": null,
+ "creation": "2025-07-18 09:16:56.333199",
+ "docstatus": 0,
+ "doctype": "Page",
+ "idx": 0,
+ "modified": "2025-07-18 09:16:56.333199",
+ "modified_by": "Administrator",
+ "module": "Project Costing",
+ "name": "project-cost-control",
+ "owner": "Administrator",
+ "page_name": "project-cost-control",
+ "roles": [
+  {
+   "role": "System Manager"
+  }
+ ],
+ "script": null,
+ "standard": "Yes",
+ "style": null,
+ "system_page": 0,
+ "title": "Project Cost Control"
+}

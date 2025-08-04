@@ -1,0 +1,115 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "creation": "2025-07-08 08:21:17.271510",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "employee_id",
+  "full_name",
+  "designation",
+  "quantity",
+  "supplier",
+  "supplier_name",
+  "column_break_7v9k",
+  "boq_item",
+  "boq_id",
+  "boq_item_description",
+  "normal_hours",
+  "overtime_hours"
+ ],
+ "fields": [
+  {
+   "fieldname": "employee_id",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Employee ID"
+  },
+  {
+   "fieldname": "full_name",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Full Name"
+  },
+  {
+   "fieldname": "designation",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Designation",
+   "options": "Designation"
+  },
+  {
+   "fieldname": "supplier",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Supplier",
+   "options": "Supplier"
+  },
+  {
+   "fetch_from": "supplier.supplier_name",
+   "fieldname": "supplier_name",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Supplier Name",
+   "read_only": 1
+  },
+  {
+   "fieldname": "column_break_7v9k",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "boq_item",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "BOQ Item",
+   "options": "BOQ Details"
+  },
+  {
+   "fetch_from": "boq_item.boq_id",
+   "fieldname": "boq_id",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "BOQ ID",
+   "read_only": 1
+  },
+  {
+   "fetch_from": "boq_item.div_name",
+   "fieldname": "boq_item_description",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "BOQ Item Description",
+   "read_only": 1
+  },
+  {
+   "fieldname": "normal_hours",
+   "fieldtype": "Float",
+   "label": "Normal Hours"
+  },
+  {
+   "fieldname": "overtime_hours",
+   "fieldtype": "Float",
+   "label": "Overtime Hours"
+  },
+  {
+   "default": "1",
+   "fieldname": "quantity",
+   "fieldtype": "Int",
+   "label": "Quantity"
+  }
+ ],
+ "grid_page_length": 50,
+ "index_web_pages_for_search": 1,
+ "istable": 1,
+ "links": [],
+ "modified": "2025-07-08 08:36:43.332838",
+ "modified_by": "Administrator",
+ "module": "Project Costing",
+ "name": "DCR Rental Employee List",
+ "owner": "Administrator",
+ "permissions": [],
+ "row_format": "Dynamic",
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}
