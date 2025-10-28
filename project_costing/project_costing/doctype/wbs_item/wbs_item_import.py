@@ -241,3 +241,16 @@ def import_wbs_from_file(file_name, boq_name, project_name, warehouse):
         frappe.msgprint(f"Import completed successfully. {success} WBS items imported for BOQ: {boq_name}.")
 
     return {"total": total, "success": success, "failed": failed}
+
+@frappe.whitelist()
+def import_wbs_from_file_async(file_name, boq_name, project_name, warehouse):
+    job = frappe.enqueue(
+        "project_costing.project_costing.doctype.wbs_item.wbs_item_import.import_wbs_from_file",
+        file_name=file_name,
+        boq_name=boq_name,
+        project_name=project_name,
+        warehouse=warehouse,
+        queue="long",
+        timeout=3600  # 1 hour
+    )
+    return {"job_id": job.id}

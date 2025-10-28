@@ -44,84 +44,57 @@ class WBSitem(NestedSet):
             
     def calculation_of_wbs_item(self):
         if self.resource_rate and self.custom_total_resource_qty:
-            self.budget_rate = self.resource_rate * self.custom_total_resource_qty
+            self.budget = self.resource_rate * self.custom_total_resource_qty
             
         if self.waste and self.budget_qty and self.resource_qty:
             self.custom_total_resource_qty = self.budget_qty * self.waste * self.resource_qty
 
-        if self.custom_total_resource_qty and self.pr__reserved_qty and self.risk__qty and self.petty_cash_qty:
-            self.available_amount = self.custom_total_resource_qty - (self.pr__reserved_qty + self.risk__qty + self.petty_cash_qty)
+        # if self.custom_total_resource_qty and self.pr__reserved_qty and self.risk__qty and self.petty_cash_qty:
+        #     self.available_amount = self.custom_total_resource_qty - (self.pr__reserved_qty + self.risk__qty + self.petty_cash_qty)
 
-        if self.available_amount and self.resource_rate:
-            self.available_amount = self.available_amount * self.resource_rate
+        if self.available_qty and self.resource_rate:
+            self.available_amount = self.available_qty * self.resource_rate
             
         available_qty = get_stock_balance(self.item, self.warehouse)
         if available_qty:
             self.available_qty = available_qty
             self.custom_qty_in_hand = available_qty
-
-import frappe
-from frappe import _
-from frappe.utils.nestedset import NestedSet
-import re  
-from erpnext.stock.utils import get_stock_balance
+        material_summary = get_material_issue_summary(self.item, self.warehouse)
+        self.consumed_quantity = material_summary.get("total_qty", 0)
 
 
-class WBSitem(NestedSet):
-    def autoname(self):
-        # Generate name based on a sequence
-        last_number = frappe.db.get_value("WBS item", {}, "name", order_by="creation desc")
-        
-        if last_number:
-            # Extract and increment the last number
-            parts = last_number.split('-')
-            if len(parts) > 1 and parts[-1].isdigit():
-                new_number = int(parts[-1]) + 1
-            else:
-                new_number = 1  # Reset to 1 if last number part isn't valid
-        else:
-            new_number = 1  # Start at 1 if no WBS item exists
+def get_total_quantities(doc_name, doc_boq):
+    total = 0
+    items = frappe.get_all(doc_name, filters = {"custom_boq": doc_boq}, fields=["name", "qty", "custom_boq"])
+    for item in items:
+        if item.custom_boq == doc_boq:
+            total = total + item.qty
+    return total
 
-        # Format the new name (e.g., WBS-0001)
-        new_name = f"WBS-{new_number:04d}"
-        self.name = new_name  # Set the name field for the new record
-        
-        # Set a unique serial number, avoid None or empty value
-        if not self.serial_no:
-            self.serial_no = new_name  # Optionally use the name as the serial number
-            
-    def validate(self):
-        existing_item_name = frappe.db.get_value("Item",filters={"item_name": self.item_code,"disabled": 0},fieldname="name")
-
-        if existing_item_name:
-            self.db_set("item",existing_item_name)
-            self.item = existing_item_name
-            if self.item:
-                self.db_set("item_group",frappe.db.get_value("Item",self.item,"item_group"))
-                self.db_set("uom",frappe.db.get_value("Item",self.item,"stock_uom"))
-                self.db_set("item_name",frappe.db.get_value("Item",self.item,"item_name"))
-        else:
-            self.item = None 
-        self.calculation_of_wbs_item()
-            
-    def calculation_of_wbs_item(self):
-        if self.resource_rate and self.custom_total_resource_qty:
-            self.budget_rate = self.resource_rate * self.custom_total_resource_qty
-            
-        if self.waste and self.budget_qty and self.resource_qty:
-            self.custom_total_resource_qty = self.budget_qty * self.waste * self.resource_qty
-
-        if self.custom_total_resource_qty and self.pr__reserved_qty and self.risk__qty and self.petty_cash_qty:
-            self.available_amount = self.custom_total_resource_qty - (self.pr__reserved_qty + self.risk__qty + self.petty_cash_qty)
-
-        if self.available_amount and self.resource_rate:
-            self.available_amount = self.available_amount * self.resource_rate
-            
-        available_qty = get_stock_balance(self.item, self.warehouse)
-        if available_qty:
-            self.available_qty = available_qty
-            self.custom_qty_in_hand = available_qty
-        # self.consumed_quantity = get_material_issue_summary(self.item, self.warehouse)
+# scheduled_tasks that runs daily to update wbs items, might delete later
+@frappe.whitelist()        
+def update_wbs_items():
+    docs = frappe.get_all("WBS item", fields=["name"])
+    purchase_receipts = frappe.get_all("Purchase Receipt", filters = {"is_petty_cash" : 1}, fields = ["name"])
+    for d in docs:
+        doc = frappe.get_doc("WBS item", d.name)
+        doc.validate()
+        total_petty_cash_qty = 0
+        total_petty_cash_amount = 0
+        total_pr = get_total_quantities("Material Request Item", doc.boq)
+        total_po = get_total_quantities("Purchase Order Item", doc.boq)
+        for pr in purchase_receipts:
+            pr_doc = frappe.get_doc("Purchase Receipt", pr.name)
+            for item in pr_doc.items:
+                if item.custom_boq == doc.boq:
+                    total_petty_cash_qty = total_petty_cash_qty + item.qty
+                    total_petty_cash_amount = total_petty_cash_amount + item.amount
+        doc.petty_cash_qty = total_petty_cash_qty
+        doc.petty_cash_amount = total_petty_cash_amount
+        doc.pr__reserved_qty = total_pr
+        doc.po_reserved_qty = total_po
+        doc.save()
+        frappe.db.commit()
 
             
 @frappe.whitelist()

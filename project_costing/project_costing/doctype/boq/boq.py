@@ -6,8 +6,7 @@ from frappe import _
 from frappe.model.naming import make_autoname
 from frappe.model.mapper import get_mapped_doc
 from frappe.desk.form.linked_with import get_linked_docs
-
-
+from frappe.utils import now_datetime
 
 class BOQ(Document):
     pass
@@ -237,3 +236,42 @@ def create_sales_order_from_boq(boq_name, customer):
         target_doc=None,
         postprocess=postprocess
     )
+
+@frappe.whitelist()
+def created_task(boq_name):
+    created_tasks_list = []
+
+    boq_details = frappe.get_all("BOQ Details", filters={"boq": boq_name}, fields=["name", "item_cost_code", "boq", "item","project"])
+    parent_task_map = {}  
+
+    for row in boq_details:
+        boq_task = frappe.new_doc("Task")
+        boq_task.subject = row.item_cost_code or f"Task for BoQ Details {row.name}"
+        boq_task.custom_boq = row.boq
+        boq_task.project = row.project
+        boq_task.custom_boq_details = row.name
+        boq_task.exp_start_date = now_datetime()
+        boq_task.description = row.item
+        boq_task.is_group = 1
+        boq_task.insert()  
+        created_tasks_list.append(boq_task.name)
+
+        parent_task_map[row.name] = boq_task.name
+
+    wbs_items = frappe.get_all("WBS item", filters={"boq": boq_name}, fields=["name","item_code","short_description", "cost_code", "project", "boq", "boq_details"])
+
+    for row in wbs_items:
+        wbs_task = frappe.new_doc("Task")
+        wbs_task.subject = row.short_description or f"Task for WBS {row.name}"
+        wbs_task.custom_boq = row.boq
+        wbs_task.project = row.project
+        wbs_task.custom_wbs_item = row.name
+        wbs_task.description = row.item_code
+        wbs_task.exp_start_date = now_datetime()
+
+        if row.boq_details and row.boq_details in parent_task_map:
+            wbs_task.parent_task = parent_task_map[row.boq_details]
+
+        wbs_task.insert()
+        created_tasks_list.append(wbs_task.name)
+    return {"created_task": created_tasks_list}

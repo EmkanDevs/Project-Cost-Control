@@ -52,10 +52,27 @@ frappe.ui.form.on('BOQ', {
                 callback: function (r) {
                     if (r.message && r.message.created_items && r.message.created_items.length) {
                         frappe.msgprint(__('Total Created Items: ') + r.message.created_items.length);
-                        // frm.set_value('missing_item_created', 1);
+                        frm.set_value('missing_item_created', 1);
                         frm.reload_doc(); 
                     } else {
                         frappe.msgprint(__('No new items were created.'));
+                    }
+                }
+            });
+        })};
+        if (frm.doc.task_created == 0 && frm.doc.missing_item_created == 1){
+        frm.add_custom_button('Create Task', () => {
+            frappe.call({
+                method: 'project_costing.project_costing.doctype.boq.boq.created_task',
+                args: { boq_name: frm.doc.name },
+                callback: function (r) {
+                    if (r.message && r.message.created_task && r.message.created_task.length) {
+                        frappe.msgprint(__('Total Created Task: ') + r.message.created_task.length);
+                        frm.set_value('task_created', 1);
+
+                        frm.reload_doc();
+                    } else {
+                        frappe.msgprint(__('No new task are created.'));
                     }
                 }
             });
@@ -222,7 +239,7 @@ frappe.ui.form.on('BOQ', {
                         }
 
                         frappe.call({
-                            method: "project_costing.project_costing.doctype.wbs_item.wbs_item_import.import_wbs_from_file",
+                            method: "project_costing.project_costing.doctype.wbs_item.wbs_item_import.import_wbs_from_file_async",
                             args: {
                                 file_name: values.file,
                                 boq_name: frm.doc.name,
@@ -395,8 +412,8 @@ frappe.ui.form.on('BOQ', {
     
     render_unlinked_wbs_html: function (frm) {
         const encodedFilter = encodeURIComponent(`["is", "not set"]`);
-        const route = `/app/WBS Item?boq_details=${encodedFilter}`;
-        const item_route = `/app/WBS Item?item=${encodedFilter}`;
+        const route = `/app/wbs-item?boq_details=${encodedFilter}`;
+        const item_route = `/app/wbs-item?item=${encodedFilter}`;
 
         const html = `
             <div style="margin-top: 10px; padding: 10px 0;">

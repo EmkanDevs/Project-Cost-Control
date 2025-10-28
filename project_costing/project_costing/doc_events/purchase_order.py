@@ -1,5 +1,11 @@
 import frappe
 from frappe import _
+from project_costing.project_costing.doc_events.wbs_item import get_purchase_order_items
+        
+def on_update(self, method):
+    for item in self.items:
+        wbs = frappe.get_doc("WBS item", item.custom_wbs)
+        get_purchase_order_items("Purchase Order Item", wbs)
 
 def on_submit(self, method):
     for row in self.items:

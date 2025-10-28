@@ -1,8 +1,13 @@
 import frappe
 from frappe import _
 import json
-
-
+from project_costing.project_costing.doc_events.wbs_item import get_material_request_items
+        
+def on_update(self, method):
+    for item in self.items:
+        wbs = frappe.get_doc("WBS item", item.custom_wbs)
+        get_material_request_items("Material Request", wbs)
+    
 def on_submit(self, method):
     for row in self.items:
         if row.custom_wbs:

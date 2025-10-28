@@ -16,6 +16,7 @@
   "elapsed_time_percent",
   "boq_details_created",
   "details_fetched",
+  "task_created",
   "column_break_kxdd",
   "version",
   "warehouse",
@@ -230,6 +231,13 @@
    "label": "Warehouse",
    "options": "Warehouse",
    "reqd": 1
+  },
+  {
+   "default": "0",
+   "fieldname": "task_created",
+   "fieldtype": "Check",
+   "label": "Task Created",
+   "read_only": 1
   }
  ],
  "grid_page_length": 50,
@@ -299,7 +307,7 @@
    "table_fieldname": "expenses"
   }
  ],
- "modified": "2025-08-01 14:11:26.106917",
+ "modified": "2025-10-20 11:42:45.780639",
  "modified_by": "Administrator",
  "module": "Project Costing",
  "name": "BOQ",

@@ -67,6 +67,8 @@ def get_purchasing_docs(start_date=None, end_date=None, project=None, boq=None, 
             filters.append([config["date_field"], '<=', end_date])
         if dynamic_docname:
             filters.append(["name", "=", dynamic_docname])
+        if doctype_name == "Material Request":
+            filters.append(["material_request_type", "=", "Purchase"])
 
         parent_meta = frappe.get_meta(doctype_name)
         available_parent_fields = [f.fieldname for f in parent_meta.fields]

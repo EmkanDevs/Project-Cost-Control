@@ -1,6 +1,10 @@
 import frappe
 from frappe import _
 
+def on_update(self, method):
+    for item in self.items:
+        frappe.get_doc("WBS item", item.custom_wbs).validate()
+        
 def on_submit(self, method):
     # Only proceed if the stock entry purpose is Material Issue
     if self.purpose != "Material Issue":

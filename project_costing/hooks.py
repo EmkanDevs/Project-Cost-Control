@@ -146,7 +146,23 @@ doctype_tree_js = {"WBS item" : "public/js/wbs_item_tree.js",
 # Document Events
 # ---------------
 # Hook on document methods and events
-
+doc_events = {
+    "WBS item": {
+        "validate": "project_costing.project_costing.doc_events.wbs_item.validate"
+    },
+    "Material Request": {
+        "on_update": "project_costing.project_costing.doc_events.material_request.on_update"
+    },    
+    "Purchase Order": {
+        "on_update": "project_costing.project_costing.doc_events.purchase_order.on_update"
+    },
+    "Purchase Receipt": {
+        "on_update": "project_costing.project_costing.doc_events.purchase_receipt.on_update"
+    },
+    "Stock Entry": {
+        "on_update": "project_costing.project_costing.doc_events.stock_entry.on_update"
+    },
+}
 # doc_events = {
 # 	"Material Request":{
 #         "on_submit": "project_costing.project_costing.doc_events.material_request.on_submit",
@@ -169,6 +185,11 @@ doctype_tree_js = {"WBS item" : "public/js/wbs_item_tree.js",
 # Scheduled Tasks
 # ---------------
 
+scheduler_events = {
+	"daily": [
+		"project_costing.project_costing.doctype.wbs_item.wbs_item.update_wbs_items",
+	]
+}
 # scheduler_events = {
 # 	"all": [
 # 		"project_costing.tasks.all"
