@@ -2,7 +2,19 @@ frappe.ui.form.on('WBS item', {
     refresh: function(frm) {
         // Apply WBS visibility rules first
         apply_wbs_visibility_rules(frm);
-        
+        frm.add_custom_button("Fetch Stock", () => {
+            frappe.call({
+                method: "project_costing.project_costing.doctype.wbs_item.wbs_item.get_warehouse_qty",
+                args: {
+                    docname: frm.doc.name
+                },
+                callback(r) {
+                    if (r.message) {
+                        frm.reload_doc();
+                    }
+                }
+            });
+        });        
         // Add custom button if level is less than 4
         if (frm.doc.level < 5) {
             frm.add_custom_button(__('Add Child WBS Item'), function() {

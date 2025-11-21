@@ -19,36 +19,49 @@ class BOQDetails(Document):
                 self.item_code = None
 
 @frappe.whitelist()
-def get_children(doctype, parent=None, is_root=False):
-    filters = {"parent_boq_details": parent or ""}
+def get_children(doctype, parent=None, is_root=False, **kwargs):
+
+    # Extract BOQ filter (TreeView passes it as kwargs)
+    boq = kwargs.get("boq")
+    boq_id = kwargs.get("boq_id")
+
+    filters = {
+        "parent_boq_details": parent or ""
+    }
+
+    # IF BOQ FILTER APPLIED → add it to DB filter
+    if boq:
+        filters["boq"] = boq
+    if boq_id:
+        filters["boq_id"] = boq_id
 
     items = frappe.get_all(
         doctype,
         filters=filters,
         fields=[
-            "name as value",       # required for tree ID
-            "name as label",       # shown in get_label
+            "name as value",
+            "name as label",
             "boq_id",
-            "is_group"
+            "is_group",
+            "original_contract_price"
         ],
         order_by="name"
     )
 
-    # If it's the root call and no items exist, return a default root
+    # Root handling
     if not parent and not items:
         return [{
             "value": "Root",
             "label": "WBS Root",
             "boq_id": "",
             "is_group": 1,
-            "expandable": True  # Mark root as expandable
+            "expandable": True,
+            "original_contract_price": 0
         }]
-    
-    # Process items to add the 'expandable' property
+
+    # Set expandable + ensure numeric amount
     for item in items:
-        if item.is_group:
-            item.expandable = True
-        else:
-            item.expandable = False # Explicitly set to false for non-group items
+        item.expandable = 1 if item.is_group else 0
+        item.original_contract_price = item.original_contract_price or 0
 
     return items

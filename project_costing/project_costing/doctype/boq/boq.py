@@ -7,6 +7,7 @@ from frappe.model.naming import make_autoname
 from frappe.model.mapper import get_mapped_doc
 from frappe.desk.form.linked_with import get_linked_docs
 from frappe.utils import now_datetime
+import time
 
 class BOQ(Document):
     pass
@@ -23,9 +24,18 @@ def safe_string(value):
     if value is None or (isinstance(value, float) and math.isnan(value)):
         return ""
     return str(value).strip()
-
+    
+def safe_int(value):
+    """Convert value to integer safely"""
+    if value is None or pd.isna(value):
+        return 1
+    try:
+        return int(value)
+    except (ValueError, TypeError):
+        return 1
+    
 @frappe.whitelist()
-def import_boq_items_from_excel(file_path: str, boq_name: str,project_name, warehouse):
+def import_boq_items_from_excel(file_path: str, boq_name: str, project_name, warehouse, use_boq_id_hierarchy=False):
     file_doc = frappe.get_doc('File', {'file_url': file_path})
     absolute_path = file_doc.get_full_path()
     df = pd.read_excel(absolute_path, header=0)
@@ -40,60 +50,245 @@ def import_boq_items_from_excel(file_path: str, boq_name: str,project_name, ware
         'div_name': 'DIV. Name',
         'lvl': 'LvL',
         'boq_id': 'BOQ ID',
-        'uom':'Unit',
+        'uom': 'Unit',
     }
 
+    total = len(df)
     created = 0
-    last_node_by_level = {}
 
-    for index, row in df.iterrows():
+    if use_boq_id_hierarchy:
+        # Use BOQ ID based hierarchy approach
+        return create_boq_id_hierarchy(df, boq_name, project_name, warehouse, column_map)
+    else:
+        # Use Level-based hierarchy approach (original)
+        return create_level_based_hierarchy(df, boq_name, project_name, warehouse, column_map)
+
+def create_level_based_hierarchy(df, boq_name, project_name, warehouse, column_map):
+    """Original level-based hierarchy approach"""
+    created = 0
+    total = len(df)
+    
+    # Store created documents for parent lookup
+    doc_map = {}  # {item_cost_code: doc_name}
+    level_map = {}  # {level: last_doc_name}
+    
+    # Sort by level to ensure parents are created before children
+    df_sorted = df.sort_values(by=[column_map['lvl']]).reset_index(drop=True)
+    
+    for index, row in df_sorted.iterrows():
         boq_id = safe_string(row.get(column_map['boq_id']))
         item_cost_code = safe_string(row.get(column_map['item_cost_code']))
-        if not boq_id or not item_cost_code:
+        level = safe_int(row.get(column_map['lvl']))
+        
+        if not item_cost_code:
             continue
 
         try:
-            level = int(row.get(column_map['lvl']))
-        except (ValueError, TypeError):
-            level = 1
+            doc = frappe.new_doc('BOQ Details')
+            doc.boq = boq_name
+            doc.warehouse = warehouse
+            doc.item_cost_code = item_cost_code
+            doc.item = safe_string(row.get(column_map['item']))
+            doc.boq_qty = safe_float(row.get(column_map['boq_qty']))
+            doc.selling_rate = safe_float(row.get(column_map['selling_rate']))
+            doc.original_contract_price = safe_float(row.get(column_map['original_contract_price']))
+            doc.div_name = safe_string(row.get(column_map['div_name']))
+            doc.boq_id = boq_id
+            doc.project = project_name
+            doc.lvl = level
+            doc.parent = boq_name
+            doc.parenttype = 'BOQ'
+            doc.parentfield = 'items'
+            doc.uom = safe_string(row.get(column_map['uom']))
 
-        parent_name = None
-        for l in sorted(last_node_by_level.keys(), reverse=True):
-            if l < level:
-                parent_name = last_node_by_level[l]
-                break
+            # Find parent based on level hierarchy
+            parent_name = None
+            for parent_level in range(level-1, 0, -1):
+                if parent_level in level_map:
+                    parent_name = level_map[parent_level]
+                    break
+            
+            if parent_name:
+                doc.parent_boq_details = parent_name
 
+            doc.insert(ignore_permissions=True)
+            created += 1
+            
+            # Store for parent lookup
+            doc_map[item_cost_code] = doc.name
+            level_map[level] = doc.name
+            
+            # Clear deeper levels to maintain proper hierarchy
+            levels_to_remove = [l for l in level_map.keys() if l >= level]
+            for l in levels_to_remove:
+                if l != level:
+                    level_map.pop(l, None)
+
+            # Send realtime progress
+            frappe.publish_realtime(
+                "boq_import_progress",
+                {"progress": (created / total) * 100},
+                user=frappe.session.user
+            )
+
+        except Exception as e:
+            frappe.log_error(f"Error importing BOQ item {item_cost_code}: {str(e)}")
+            continue
+
+    frappe.db.commit()
+
+    # Mark groups based on hierarchy
+    mark_groups_as_is_group(boq_name)
+
+    frappe.db.set_value("BOQ", boq_name, "boq_details_created", 1)
+    frappe.db.commit()
+
+    frappe.publish_realtime("boq_import_progress", {"progress": 100}, user=frappe.session.user)
+    frappe.msgprint(f"Total BOQ Details created: {created}")
+
+    return {"success": created}
+
+def create_boq_id_hierarchy(df, boq_name, project_name, warehouse, column_map):
+    """BOQ ID based hierarchy approach - creates missing intermediate levels"""
+    created = 0
+    total = len(df)
+    
+    # First, create all existing items
+    existing_items = {}
+    all_rows = []
+    
+    for index, row in df.iterrows():
+        boq_id = safe_string(row.get(column_map['boq_id']))
+        item_cost_code = safe_string(row.get(column_map['item_cost_code']))
+        
+        if not item_cost_code:
+            continue
+        
+        # Store the row for processing
+        all_rows.append(row)
+        
+        # Create the document
+        parent_name = find_parent_for_boq_id(boq_id, existing_items)
+        doc = create_boq_detail_doc(row, boq_name, project_name, warehouse, parent_name, column_map)
+        
+        if doc:
+            created += 1
+            existing_items[item_cost_code] = doc.name
+            if boq_id:
+                existing_items[boq_id] = doc.name
+            
+            # Send realtime progress
+            frappe.publish_realtime(
+                "boq_import_progress",
+                {"progress": (created / len(all_rows)) * 100},
+                user=frappe.session.user
+            )
+    
+    # Then create missing intermediate BOQ ID levels
+    for row in all_rows:
+        boq_id = safe_string(row.get(column_map['boq_id']))
+        if not boq_id or '.' not in boq_id:
+            continue
+            
+        # Create all parent levels for this BOQ ID
+        parts = boq_id.split('.')
+        for i in range(1, len(parts)):
+            parent_boq_id = '.'.join(parts[:i])
+            
+            # If this parent doesn't exist, create it
+            if parent_boq_id not in existing_items:
+                # Find the appropriate DIV name for this parent
+                div_name = find_div_name_for_boq_id(parent_boq_id, df, column_map)
+                
+                parent_row = {
+                    column_map['item_cost_code']: f"PARENT-{parent_boq_id}",
+                    column_map['item']: f"Parent Group {parent_boq_id}",
+                    column_map['boq_id']: parent_boq_id,
+                    column_map['lvl']: i + 3,  # Adjust level based on your structure
+                    column_map['uom']: '',
+                    column_map['boq_qty']: 0,
+                    column_map['selling_rate']: 0,
+                    column_map['original_contract_price']: 0,
+                    column_map['div_name']: div_name or row.get(column_map['div_name'])
+                }
+                
+                # Find grandparent if exists
+                grandparent_id = None
+                if i > 1:
+                    grandparent_boq_id = '.'.join(parts[:i-1])
+                    grandparent_id = existing_items.get(grandparent_boq_id)
+                
+                doc = create_boq_detail_doc(parent_row, boq_name, project_name, warehouse, grandparent_id, column_map)
+                if doc:
+                    created += 1
+                    existing_items[parent_boq_id] = doc.name
+                    existing_items[f"PARENT-{parent_boq_id}"] = doc.name
+
+    frappe.db.commit()
+
+    # Mark groups based on hierarchy
+    mark_groups_as_is_group(boq_name)
+
+    frappe.db.set_value("BOQ", boq_name, "boq_details_created", 1)
+    frappe.db.commit()
+
+    frappe.publish_realtime("boq_import_progress", {"progress": 100}, user=frappe.session.user)
+    frappe.msgprint(f"Total BOQ Details created: {created}")
+
+    return {"success": created}
+
+def find_parent_for_boq_id(boq_id, existing_items):
+    """Find parent for a given BOQ ID"""
+    if not boq_id or '.' not in boq_id:
+        return None
+        
+    parts = boq_id.split('.')
+    for i in range(len(parts)-1, 0, -1):
+        parent_boq_id = '.'.join(parts[:i])
+        if parent_boq_id in existing_items:
+            return existing_items[parent_boq_id]
+    
+    return None
+
+def find_div_name_for_boq_id(parent_boq_id, df, column_map):
+    """Find appropriate DIV name for a parent BOQ ID by looking at children"""
+    for index, row in df.iterrows():
+        boq_id = safe_string(row.get(column_map['boq_id']))
+        if boq_id and boq_id.startswith(parent_boq_id + '.'):
+            return safe_string(row.get(column_map['div_name']))
+    return None
+
+def create_boq_detail_doc(row, boq_name, project_name, warehouse, parent_name, column_map):
+    """Helper function to create BOQ Detail document"""
+    try:
         doc = frappe.new_doc('BOQ Details')
         doc.boq = boq_name
         doc.warehouse = warehouse
-        doc.item_cost_code = item_cost_code
+        doc.item_cost_code = safe_string(row.get(column_map['item_cost_code']))
         doc.item = safe_string(row.get(column_map['item']))
         doc.boq_qty = safe_float(row.get(column_map['boq_qty']))
         doc.selling_rate = safe_float(row.get(column_map['selling_rate']))
         doc.original_contract_price = safe_float(row.get(column_map['original_contract_price']))
         doc.div_name = safe_string(row.get(column_map['div_name']))
-        doc.boq_id = boq_id
+        doc.boq_id = safe_string(row.get(column_map['boq_id']))
         doc.project = project_name
-        doc.lvl = level
+        doc.lvl = safe_int(row.get(column_map['lvl']))
         doc.parent = boq_name
         doc.parenttype = 'BOQ'
         doc.parentfield = 'items'
         doc.uom = safe_string(row.get(column_map['uom']))
-
+        
         if parent_name:
             doc.parent_boq_details = parent_name
-
+        
         doc.insert(ignore_permissions=True)
-        created += 1
+        return doc
+    except Exception as e:
+        frappe.log_error(f"Error creating BOQ detail: {str(e)}")
+        return None
 
-        last_node_by_level[level] = doc.name
-
-        for l in list(last_node_by_level.keys()):
-            if l > level:
-                last_node_by_level.pop(l)
-
-    frappe.db.commit()
-
+def mark_groups_as_is_group(boq_name):
+    """Mark items that have children as groups"""
     child_parents = frappe.get_all(
         'BOQ Details',
         filters={'boq': boq_name, 'parent_boq_details': ['!=', '']},
@@ -102,13 +297,6 @@ def import_boq_items_from_excel(file_path: str, boq_name: str,project_name, ware
     parent_names = set(c['parent_boq_details'] for c in child_parents)
     for parent_name in parent_names:
         frappe.db.set_value('BOQ Details', parent_name, 'is_group', 1)
-    frappe.db.set_value("BOQ",boq_name,"boq_details_created",1)
-    frappe.db.commit()
-    frappe.msgprint(f"Total BOQ Details created: {created}")
-    return True
-
-
-
 
 @frappe.whitelist()
 def get_child_data(boq):

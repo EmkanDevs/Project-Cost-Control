@@ -7,12 +7,14 @@
  "editable_grid": 1,
  "engine": "InnoDB",
  "field_order": [
+  "warehouse_qty",
   "serial_no",
   "serial",
   "short_description",
   "boq_id",
   "boq_details",
   "warehouse",
+  "warehouse_transfered",
   "column_break_scqz",
   "cost_code",
   "project",
@@ -40,6 +42,7 @@
   "resource_rate",
   "column_break_7",
   "unit_cost",
+  "original_budget",
   "budget",
   "total",
   "available_amount",
@@ -87,7 +90,7 @@
   {
    "fieldname": "cost_code",
    "fieldtype": "Data",
-   "label": "Cost Code"
+   "label": "WBS Code"
   },
   {
    "fieldname": "project",
@@ -203,7 +206,7 @@
   {
    "fieldname": "budget",
    "fieldtype": "Float",
-   "label": "Budget"
+   "label": "Total Budget"
   },
   {
    "default": "0",
@@ -362,13 +365,29 @@
   {
    "fieldname": "warehouse",
    "fieldtype": "Link",
-   "label": "Warehouse",
+   "label": "Warehouse Issued",
    "options": "Warehouse"
   },
   {
    "fieldname": "budget_qty",
    "fieldtype": "Float",
    "label": "Budget Qty"
+  },
+  {
+   "fieldname": "warehouse_transfered",
+   "fieldtype": "Link",
+   "label": "Warehouse Transfered",
+   "options": "Warehouse"
+  },
+  {
+   "fieldname": "original_budget",
+   "fieldtype": "Data",
+   "label": "Budget Rate"
+  },
+  {
+   "fieldname": "warehouse_qty",
+   "fieldtype": "Int",
+   "label": "Warehouse Qty"
   }
  ],
  "index_web_pages_for_search": 1,
@@ -415,7 +434,7 @@
    "table_fieldname": "expenses"
   }
  ],
- "modified": "2025-08-01 15:09:59.800660",
+ "modified": "2025-11-20 08:07:39.450408",
  "modified_by": "Administrator",
  "module": "Project Costing",
  "name": "WBS item",

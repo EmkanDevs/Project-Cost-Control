@@ -207,7 +207,7 @@ scheduler_events = {
 # 		"project_costing.tasks.monthly"
 # 	],
 # }
-treeviews = ["WBS item"]
+treeviews = ["WBS item", "BOQ Details"]
 # Testing
 # -------
 

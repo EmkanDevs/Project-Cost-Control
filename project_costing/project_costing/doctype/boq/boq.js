@@ -148,44 +148,67 @@ frappe.ui.form.on('BOQ', {
                             });
                             return;
                         }
-
+    
+                        // Progress Bar Dialog
+                        const progress_dialog = new frappe.ui.Dialog({
+                            title: __('Import Progress'),
+                            fields: [
+                                {
+                                    fieldname: 'progress',
+                                    fieldtype: 'HTML',
+                                    options: `
+                                        <div class="progress" style="height: 20px;">
+                                            <div class="progress-bar progress-bar-striped progress-bar-animated" 
+                                                role="progressbar" style="width: 0%;" aria-valuenow="0" 
+                                                aria-valuemin="0" aria-valuemax="100">0%</div>
+                                        </div>
+                                    `
+                                }
+                            ]
+                        });
+                        progress_dialog.show();
+    
+                        // Listen for realtime progress updates
+                        frappe.realtime.on("boq_import_progress", (data) => {
+                            if (data && data.progress) {
+                                let percent = Math.round(data.progress);
+                                const bar = progress_dialog.$wrapper.find('.progress-bar');
+                                bar.css('width', percent + '%');
+                                bar.attr('aria-valuenow', percent);
+                                bar.text(percent + '%');
+    
+                                if (percent >= 100) {
+                                    bar.removeClass('progress-bar-animated');
+                                    setTimeout(() => progress_dialog.hide(), 1000);
+                                }
+                            }
+                        });
+    
+                        // Start import call
                         frappe.call({
                             method: "project_costing.project_costing.doctype.boq.boq.import_boq_items_from_excel",
                             args: {
                                 file_path: values.file,
                                 boq_name: frm.doc.name,
-                                project_name :frm.doc.project,
+                                project_name: frm.doc.project,
                                 warehouse: frm.doc.warehouse
                             },
                             freeze: true,
                             freeze_message: __('Importing data...'),
                             callback(r) {
-                                if (r.message && r.message.success > 0) {
-                                    frm.set_value("boq_details_created", 1);
-                                    frm.save(); 
+                                if (r.message) {
                                     frappe.msgprint(__('BOQ items imported successfully!'));
-                                    d.hide(); 
-                                    frm.reload_doc(); 
-                                } else if (r.message && r.message.failed && r.message.failed.length === r.message.total) {
-                                    frappe.msgprint({
-                                        title: __('Import Failed'),
-                                        indicator: 'red',
-                                        message: __('No BOQ items were imported. Please check the file format and data.')
-                                    });
-                                } else if (r.message && r.message.failed && r.message.failed.length > 0) {
-                                    frappe.msgprint({
-                                        title: __('Partial Import'),
-                                        indicator: 'orange',
-                                        message: __(`Successfully imported ${r.message.success} items. Failed to import ${r.message.failed.length} items.`)
-                                    });
-                                } else if (r.exc) {
+                                    frm.set_value("boq_details_created", 1);
+                                    frm.save();
+                                    frm.reload_doc();
+                                } else {
                                     frappe.msgprint({
                                         title: __('Import Error'),
                                         indicator: 'red',
-                                        message: __('An error occurred during BOQ import. Please check server logs.')
+                                        message: __('No data imported or an error occurred. Check logs.')
                                     });
-                                    console.error(r.exc); 
                                 }
+                                d.hide();
                             },
                             error: function(err) {
                                 frappe.msgprint({
@@ -193,6 +216,7 @@ frappe.ui.form.on('BOQ', {
                                     indicator: 'red',
                                     message: __(`An unexpected error occurred: ${err.message}`)
                                 });
+                                progress_dialog.hide();
                             }
                         });
                     }
@@ -221,7 +245,7 @@ frappe.ui.form.on('BOQ', {
                                             indicator: 'red',
                                             message: __('Please upload an Excel file (.xlsx or .xls)')
                                         });
-                                        d.set_value('file', ''); 
+                                        d.set_value('file', '');
                                     }
                                 }
                             }
@@ -237,58 +261,80 @@ frappe.ui.form.on('BOQ', {
                             });
                             return;
                         }
-
+            
+                        // 🔹 Progress Bar Dialog
+                        const progress_dialog = new frappe.ui.Dialog({
+                            title: __('Import Progress'),
+                            fields: [
+                                {
+                                    fieldname: 'progress',
+                                    fieldtype: 'HTML',
+                                    options: `
+                                        <div class="progress" style="height: 20px;">
+                                            <div class="progress-bar progress-bar-striped progress-bar-animated" 
+                                                role="progressbar" style="width: 0%;" aria-valuenow="0" 
+                                                aria-valuemin="0" aria-valuemax="100">0%</div>
+                                        </div>
+                                    `
+                                }
+                            ]
+                        });
+                        progress_dialog.show();
+            
+                        // 🔹 Listen for real-time progress updates
+                        frappe.realtime.on("import_progress", (data) => {
+                            if (data && data.progress) {
+                                let percent = Math.round(data.progress);
+                                const bar = progress_dialog.$wrapper.find('.progress-bar');
+                                bar.css('width', percent + '%');
+                                bar.attr('aria-valuenow', percent);
+                                bar.text(percent + '%');
+            
+                                if (percent >= 100) {
+                                    bar.removeClass('progress-bar-animated');
+                                    setTimeout(() => progress_dialog.hide(), 1000);
+                                }
+                            }
+                        });
+            
+                        // 🔹 Start async import
                         frappe.call({
                             method: "project_costing.project_costing.doctype.wbs_item.wbs_item_import.import_wbs_from_file_async",
                             args: {
                                 file_name: values.file,
                                 boq_name: frm.doc.name,
-                                project_name:frm.doc.project,
+                                project_name: frm.doc.project,
                                 warehouse: frm.doc.warehouse
                             },
                             freeze: true,
-                            freeze_message: __('Importing data...'),
+                            freeze_message: __('Uploading and starting import...'),
                             callback(r) {
-                                if (r.message && r.message.success > 0) {
-                                    frappe.msgprint(__('WBS items imported successfully!'));
-                                    frm.set_value("wbs_item_created", 1);
-                                    frm.save(); 
-                                    d.hide(); 
-                                    frm.reload_doc(); 
-                                } else if (r.message && r.message.failed && r.message.failed.length === r.message.total) {
+                                if (r.message && r.message.job_id) {
+                                    frappe.msgprint(__('WBS import job started in background. You can monitor progress here.'));
+                                } else {
                                     frappe.msgprint({
-                                        title: __('Import Failed'),
+                                        title: __('Error'),
                                         indicator: 'red',
-                                        message: __('No WBS items were imported. Please check the file format and data.')
+                                        message: __('Failed to start import job.')
                                     });
-                                } else if (r.message && r.message.failed && r.message.failed.length > 0) {
-                                    frappe.msgprint({
-                                        title: __('Partial Import'),
-                                        indicator: 'orange',
-                                        message: __(`Successfully imported ${r.message.success} items. Failed to import ${r.message.failed.length} items.`)
-                                    });
+                                    progress_dialog.hide();
                                 }
-                                else if (r.exc) {
-                                    frappe.msgprint({
-                                        title: __('Import Error'),
-                                        indicator: 'red',
-                                        message: __('An error occurred during WBS import. Please check server logs.')
-                                    });
-                                    console.error(r.exc);
-                                }
+                                d.hide();
                             },
-                            error: function(err) {
+                            error: function (err) {
                                 frappe.msgprint({
                                     title: __('Server Error'),
                                     indicator: 'red',
                                     message: __(`An unexpected error occurred: ${err.message}`)
                                 });
+                                progress_dialog.hide();
                             }
                         });
                     }
                 });
-                d.show(); 
+                d.show();
             });
+            
         }
 
         frm.add_custom_button(__('BOQ Details'), () => {

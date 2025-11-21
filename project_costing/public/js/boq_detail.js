@@ -6,13 +6,78 @@ frappe.treeview_settings["BOQ Details"] = {
     root_label: "BOQ Details",
     get_tree_root: true, 
     get_tree_nodes: "project_costing.project_costing.doctype.boq_details.boq_details.get_children",
-
+    
     get_label: function (node) {
-        // Accessing boq_id:
-        const boqId = node.data.boq_id; // This directly accesses it from the 'data' object
-        return `${node.label} ([BOQ: ${boqId || "N/A"}]`;
+        const is_root = node.is_root || node.data.is_root;
+        if (is_root) {
+            return `
+                <div style="display:flex; width:100%;">
+                    <div style="
+                        flex:1;
+                        text-align:left;
+                        white-space:nowrap;
+                        overflow:hidden;
+                        text-overflow:ellipsis;
+                    ">
+                        ${node.label}
+                    </div>
+                </div>
+            `;
+        }
+        const boqId = node.data.boq_id || "N/A";
+        const amount = node.data.original_contract_price;
+    
+        const left = `${node.label} [BOQ: ${boqId}]`;
+    
+        const right = (amount !== null && amount !== undefined)
+            ? format_currency(amount)
+            : "";
+    
+            return `
+            <div style="
+                display: flex;
+                width: 100%;
+            ">
+                <!-- LEFT: sticks hard-left -->
+                <div style="
+                    flex: 1;
+                    text-align: left;
+                    white-space: nowrap;
+                    overflow: hidden;
+                    text-overflow: ellipsis;
+                ">
+                    ${left}
+                </div>
+    
+                <!-- RIGHT: sticks hard-right -->
+                <div style="
+                    flex: 0 0 auto;
+                    text-align: right;
+                    margin-left: 16px;
+                    white-space: nowrap;
+                    color: var(--muted-text, #6c6f72);
+                ">
+                    ${right}
+                </div>
+            </div>
+        `;
     },
-
+    
+    
+    filters: [
+        {
+            fieldname: "boq",
+            fieldtype: "Link",
+            options: "BOQ",
+            label: "BOQ"
+        },
+        {
+            fieldname: "boq_id",
+            fieldtype: "Data",
+            label: "BOQ ID"
+        }
+    ],
+    
     // Fields used when adding a child node
     fields: [
         {

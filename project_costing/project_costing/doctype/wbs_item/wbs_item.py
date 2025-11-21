@@ -40,7 +40,7 @@ class WBSitem(NestedSet):
                 self.db_set("item_name",frappe.db.get_value("Item",self.item,"item_name"))
         else:
             self.item = None 
-        self.calculation_of_wbs_item()
+            
             
     def calculation_of_wbs_item(self):
         if self.resource_rate and self.custom_total_resource_qty:
@@ -62,6 +62,23 @@ class WBSitem(NestedSet):
         material_summary = get_material_issue_summary(self.item, self.warehouse)
         self.consumed_quantity = material_summary.get("total_qty", 0)
 
+@frappe.whitelist()
+def get_warehouse_qty(docname):
+    doc = frappe.get_doc("WBS item", docname)
+
+    if doc.item and doc.warehouse:
+        available_qty = frappe.db.get_value(
+            "Bin",
+            {"item_code": doc.item, "warehouse": doc.warehouse},
+            "actual_qty"
+        ) or 0
+
+        doc.db_set("warehouse_qty", available_qty)
+
+    # Call existing method
+    doc.calculation_of_wbs_item()
+
+    return {"success": True, "warehouse_qty": available_qty}
 
 def get_total_quantities(doc_name, doc_boq):
     total = 0
@@ -95,44 +112,6 @@ def update_wbs_items():
         doc.po_reserved_qty = total_po
         doc.save()
         frappe.db.commit()
-
-            
-@frappe.whitelist()
-def get_children(doctype, parent=None, is_root=False):
-    filters = {"parent_wbs_item": parent or ""}
-
-    items = frappe.get_all(
-        doctype,
-        filters=filters,
-        fields=[
-            "name as value",       # required for tree ID
-            "name as label",       # shown in get_label
-            "cost_code as cost_code",
-            "boq_id",
-            "is_group"
-        ],
-        order_by="name"
-    )
-
-    # If it's the root call and no items exist, return a default root
-    if not parent and not items:
-        return [{
-            "value": "Root",
-            "label": "WBS Root",
-            "cost_code": "",
-            "boq_id": "",
-            "is_group": 1,
-            "expandable": True  # Mark root as expandable
-        }]
-    
-    # Process items to add the 'expandable' property
-    for item in items:
-        if item.is_group:
-            item.expandable = True
-        else:
-            item.expandable = False # Explicitly set to false for non-group items
-
-    return items
 
 
 @frappe.whitelist()
@@ -251,38 +230,52 @@ def get_material_issue_summary(item_code, warehouse):
         }
             
 @frappe.whitelist()
-def get_children(doctype, parent=None, is_root=False):
-    filters = {"parent_wbs_item": parent or ""}
+def get_children(doctype, parent=None, is_root=False, **kwargs):
+
+    # Extract BOQ filter (TreeView passes it via kwargs)
+    boq = kwargs.get("boq")
+    boq_id = kwargs.get("boq_id")
+
+    # Base filter: parent
+    filters = {
+        "parent_wbs_item": parent or ""
+    }
+
+    # If BOQ filter applied → add it
+    if boq:
+        filters["boq"] = boq
+    if boq_id:
+        filters["boq_id"] = boq_id
 
     items = frappe.get_all(
         doctype,
         filters=filters,
         fields=[
-            "name as value",       # required for tree ID
-            "name as label",       # shown in get_label
-            "cost_code as cost_code",
-            "boq_id",
-            "is_group"
+            "name as value",
+            "name as label",
+            "cost_code",
+            "boq",
+            "is_group",
+            "qty"
         ],
         order_by="name"
     )
 
-    # If it's the root call and no items exist, return a default root
+    # If no items at root → return artificial root node
     if not parent and not items:
         return [{
             "value": "Root",
             "label": "WBS Root",
             "cost_code": "",
-            "boq_id": "",
+            "boq": "",
             "is_group": 1,
-            "expandable": True  # Mark root as expandable
+            "expandable": True,
+            "qty": 0
         }]
-    
-    # Process items to add the 'expandable' property
+
+    # Mark expandable nodes
     for item in items:
-        if item.is_group:
-            item.expandable = True
-        else:
-            item.expandable = False # Explicitly set to false for non-group items
+        item.expandable = 1 if item.is_group else 0
+        item.qty = item.qty or 0
 
     return items
