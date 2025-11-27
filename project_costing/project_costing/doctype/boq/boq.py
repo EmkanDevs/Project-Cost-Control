@@ -45,6 +45,7 @@ def import_boq_items_from_excel(file_path: str, boq_name: str, project_name, war
         'item_cost_code': 'Item Cost Code',
         'item': 'Item',
         'boq_qty': 'BOQ Qty',
+        'takeoff': 'TakeOff',
         'selling_rate': 'Selling Rate',
         'original_contract_price': 'Original Contract Price',
         'div_name': 'DIV. Name',
@@ -90,6 +91,7 @@ def create_level_based_hierarchy(df, boq_name, project_name, warehouse, column_m
             doc.item_cost_code = item_cost_code
             doc.item = safe_string(row.get(column_map['item']))
             doc.boq_qty = safe_float(row.get(column_map['boq_qty']))
+            doc.takeoff = safe_float(row.get(column_map['takeoff']))
             doc.selling_rate = safe_float(row.get(column_map['selling_rate']))
             doc.original_contract_price = safe_float(row.get(column_map['original_contract_price']))
             doc.div_name = safe_string(row.get(column_map['div_name']))
@@ -204,6 +206,7 @@ def create_boq_id_hierarchy(df, boq_name, project_name, warehouse, column_map):
                     column_map['item_cost_code']: f"PARENT-{parent_boq_id}",
                     column_map['item']: f"Parent Group {parent_boq_id}",
                     column_map['boq_id']: parent_boq_id,
+                    column_map['takeoff']: 0,
                     column_map['lvl']: i + 3,  # Adjust level based on your structure
                     column_map['uom']: '',
                     column_map['boq_qty']: 0,
@@ -267,6 +270,7 @@ def create_boq_detail_doc(row, boq_name, project_name, warehouse, parent_name, c
         doc.item_cost_code = safe_string(row.get(column_map['item_cost_code']))
         doc.item = safe_string(row.get(column_map['item']))
         doc.boq_qty = safe_float(row.get(column_map['boq_qty']))
+        doc.takeoff = safe_float(row.get(column_map['takeoff']))
         doc.selling_rate = safe_float(row.get(column_map['selling_rate']))
         doc.original_contract_price = safe_float(row.get(column_map['original_contract_price']))
         doc.div_name = safe_string(row.get(column_map['div_name']))
@@ -306,7 +310,7 @@ def get_child_data(boq):
     boq_details = frappe.get_all(
         "BOQ Details", 
         filters={"boq": boq},
-        fields=["name as boq_detail","item","uom","item_group","selling_rate","boq_qty"] 
+        fields=["name as boq_detail","item","uom","item_group","selling_rate","boq_qty","takeoff"] 
     )
 
     wbs_items = frappe.get_all(

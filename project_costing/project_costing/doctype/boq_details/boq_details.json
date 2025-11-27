@@ -18,6 +18,7 @@
   "div_name",
   "lvl",
   "selling_rate",
+  "takeoff",
   "section_break_ntct",
   "item",
   "item_group",
@@ -179,6 +180,11 @@
    "fieldtype": "Link",
    "label": "Warehouse",
    "options": "Warehouse"
+  },
+  {
+   "fieldname": "takeoff",
+   "fieldtype": "Float",
+   "label": "Takeoff"
   }
  ],
  "grid_page_length": 50,
@@ -238,7 +244,7 @@
    "table_fieldname": "expenses"
   }
  ],
- "modified": "2025-08-01 14:12:55.546640",
+ "modified": "2025-11-27 07:27:50.458257",
  "modified_by": "Administrator",
  "module": "Project Costing",
  "name": "BOQ Details",

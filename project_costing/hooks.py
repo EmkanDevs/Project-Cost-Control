@@ -3,7 +3,7 @@ app_title = "Project Costing"
 app_publisher = "Finbyz"
 app_description = "Cost Control Management"
 app_email = "info@finbyz.com"
-app_license = "mit"
+app_license = "GPL-3.0"
 
 # Apps
 # ------------------

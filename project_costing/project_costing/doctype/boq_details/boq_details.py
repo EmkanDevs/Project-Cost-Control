@@ -7,7 +7,7 @@ from frappe.model.document import Document
 
 class BOQDetails(Document):
     def validate(self):
-        existing_item_name = frappe.db.get_value("Item",filters={"item_name": self.item,"disabled": 0},fieldname="name")
+        existing_item_name = frappe.db.get_value("Item",filters={"name": self.item_code,"disabled": 0, "item_group": ["!=", "WBS"]},fieldname="name")
 
         if existing_item_name:
             self.db_set("item_code",existing_item_name)
@@ -15,8 +15,9 @@ class BOQDetails(Document):
                 self.db_set("item_group",frappe.db.get_value("Item",self.item_code,"item_group"))
                 self.db_set("uom",frappe.db.get_value("Item",self.item_code,"stock_uom"))
                 self.db_set("item_name",frappe.db.get_value("Item",self.item_code,"item_name"))
-            else:
-                self.item_code = None
+        else:
+            self.item_code = None
+            # raise DoesNotExistError(f"Item {self.item_code} does not exist")
 
 @frappe.whitelist()
 def get_children(doctype, parent=None, is_root=False, **kwargs):

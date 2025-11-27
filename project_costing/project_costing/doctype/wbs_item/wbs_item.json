@@ -31,6 +31,7 @@
   "column_break_khpn",
   "item_code",
   "res_type",
+  "res_unit",
   "section_break_lcjh",
   "qty",
   "consumed_quantity",
@@ -40,6 +41,9 @@
   "po_reserved_qty",
   "available_qty",
   "resource_rate",
+  "subcontractor_rate",
+  "equipment",
+  "accessories",
   "column_break_7",
   "unit_cost",
   "original_budget",
@@ -50,6 +54,8 @@
   "petty_cash_qty",
   "petty_cash_amount",
   "budget_qty",
+  "labor",
+  "csi",
   "task_information_section",
   "ref_task",
   "start_date",
@@ -102,7 +108,7 @@
    "fieldname": "level",
    "fieldtype": "Select",
    "label": "Level",
-   "options": "1\n2\n3\n4"
+   "options": "1\n2\n3\n4\n5\n6\n7\n8\n9\n10"
   },
   {
    "fieldname": "cost_center",
@@ -319,9 +325,8 @@
   },
   {
    "fieldname": "res_type",
-   "fieldtype": "Select",
-   "label": "Res Type",
-   "options": "\nMAT\nSUB"
+   "fieldtype": "Data",
+   "label": "Res Type"
   },
   {
    "fieldname": "boq_details",
@@ -388,6 +393,36 @@
    "fieldname": "warehouse_qty",
    "fieldtype": "Int",
    "label": "Warehouse Qty"
+  },
+  {
+   "fieldname": "subcontractor_rate",
+   "fieldtype": "Float",
+   "label": "SubContractor Rate"
+  },
+  {
+   "fieldname": "equipment",
+   "fieldtype": "Data",
+   "label": "Equipment"
+  },
+  {
+   "fieldname": "accessories",
+   "fieldtype": "Data",
+   "label": "Accessories"
+  },
+  {
+   "fieldname": "labor",
+   "fieldtype": "Data",
+   "label": "Labor"
+  },
+  {
+   "fieldname": "csi",
+   "fieldtype": "Data",
+   "label": "CSI"
+  },
+  {
+   "fieldname": "res_unit",
+   "fieldtype": "Data",
+   "label": "Res Unit"
   }
  ],
  "index_web_pages_for_search": 1,
@@ -434,7 +469,7 @@
    "table_fieldname": "expenses"
   }
  ],
- "modified": "2025-11-20 08:07:39.450408",
+ "modified": "2025-11-27 09:58:58.160414",
  "modified_by": "Administrator",
  "module": "Project Costing",
  "name": "WBS item",

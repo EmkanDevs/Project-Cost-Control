@@ -61,6 +61,17 @@ def import_wbs_from_file_fast(file_name, boq_name, project_name, warehouse, prog
         rename_dict[res_type_col] = 'res_type'
 
     df = df.rename(columns=rename_dict)
+    
+    # Fix ONLY cost_center_code before iterating rows
+    if 'Finance Code' in df.columns:
+        df['Finance Code'] = df['Finance Code'].apply(
+            lambda v: str(v).split('.')[0] if isinstance(v, (float, int)) else str(v).strip()
+        )
+
+    if 'cost_center_code' in df.columns:
+        df['cost_center_code'] = df['cost_center_code'].apply(
+            lambda v: str(v).split('.')[0] if isinstance(v, (float, int)) else str(v).strip()
+        )
 
     # Clean
     df.dropna(subset=['wbs_code'], inplace=True)
@@ -107,14 +118,21 @@ def import_wbs_from_file_fast(file_name, boq_name, project_name, warehouse, prog
         'Waste ratio': 'waste',
         'Total Resource QTY': 'custom_total_resource_qty',
         'Material Rate': 'unit_cost',
-        'Budget Rate': 'unit_rate',
+        'Budget Rate': 'original_budget',
+        'Total Budget': 'budget',
         'BOQ ID': 'boq_id',
         'Finance Code': 'cost_center_code',
         'Item Description': 'short_description',
         'Combined Code': 'combined_code',
         'Item': 'item_code',
-        'Res. Type': 'res_type',
-        'Unit': 'uom'
+        'Res Type': 'res_type',
+        'Unit': 'uom',
+        "SubContractor Rate": 'subcontractor_rate',
+        "Accessories":"accessories",
+        "Labor":"labor",
+        "Equipment":"equipment",
+        "CSI":"csi",
+        "Res Unit":"res_unit",
     }
 
     # Prefetch existing WBS items for this BOQ to help parent lookup
@@ -177,7 +195,7 @@ def import_wbs_from_file_fast(file_name, boq_name, project_name, warehouse, prog
             doc.cost_code = code
 
             # Map levels >4 to 4 (same logic as original)
-            mapped_level = excel_level if excel_level <= 4 else 4
+            mapped_level = excel_level if excel_level <= 10 else 10
             doc.level = mapped_level
 
             doc.boq = boq_name
@@ -187,6 +205,10 @@ def import_wbs_from_file_fast(file_name, boq_name, project_name, warehouse, prog
             has_resource_type = res_type and pd.notna(res_type) and str(res_type).strip() != ''
             is_item_like = (excel_level >= 5) or has_resource_type
             doc.is_group = 0 if is_item_like else 1
+
+            # FIX: Set res_type on doc
+            if pd.notna(res_type) and str(res_type).strip() != '' and 'res_type' in valid_fields:
+                doc.res_type = str(res_type).strip()
 
             # Efficient parent resolution:
             parent_name = None
@@ -256,8 +278,7 @@ def import_wbs_from_file_fast(file_name, boq_name, project_name, warehouse, prog
             for col, fld in column_map.items():
                 if col not in df.columns:
                     continue
-                if fld == 'res_type':
-                    continue
+               
                 # skip if already handled
                 if is_item_like and col in ['Item', 'Item Description']:
                     continue
@@ -266,7 +287,7 @@ def import_wbs_from_file_fast(file_name, boq_name, project_name, warehouse, prog
                 if pd.isna(val) or str(val).strip() == '':
                     continue
 
-                if fld in ['qty', 'resource_qty', 'waste', 'custom_total_resource_qty', 'unit_cost', 'unit_rate']:
+                if fld in ['qty', 'resource_qty', 'waste', 'custom_total_resource_qty', 'unit_cost', 'original_budget']:
                     try:
                         numeric_val = float(str(val).strip())
                         if fld in valid_fields:

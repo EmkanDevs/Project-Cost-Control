@@ -1,5 +1,6 @@
 [project]
 name = "project_costing"
+license = { file = "license.txt" }
 authors = [
     { name = "Finbyz", email = "info@finbyz.com"}
 ]

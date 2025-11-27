@@ -29,7 +29,7 @@ class WBSitem(NestedSet):
             self.serial_no = new_name  # Optionally use the name as the serial number
             
     def validate(self):
-        existing_item_name = frappe.db.get_value("Item",filters={"item_name": self.item_code,"disabled": 0},fieldname="name")
+        existing_item_name = frappe.db.get_value("Item",filters={"name": self.item,"disabled": 0, "item_group": ["!=", "BOQ"]},fieldname="name")
 
         if existing_item_name:
             self.db_set("item",existing_item_name)
@@ -40,6 +40,7 @@ class WBSitem(NestedSet):
                 self.db_set("item_name",frappe.db.get_value("Item",self.item,"item_name"))
         else:
             self.item = None 
+            # raise DoesNotExistError(f"Item {self.item_code} does not exist")
             
             
     def calculation_of_wbs_item(self):
